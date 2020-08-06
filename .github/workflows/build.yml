@@ -16,6 +16,8 @@ jobs:
           java-version: 13
       - name: Build with Gradle
         run: ./gradlew
+        env:
+            CI: false
       - name: Archive build
         uses: actions/upload-artifact@v2
         with:
@@ -26,11 +28,11 @@ jobs:
         uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
         with:
             webhook: 'https://outlook.office.com/webhook/ee11a014-7e89-4236-b5a8-44ff49884fad@e0793d39-0939-496d-b129-198edd916feb/IncomingWebhook/f1d0852813db4607af7d932da153e39c/3aab8904-3ba2-486e-b9ee-9246128ae1c4'
-            message: 'Build Failed'
+            message: 'Build Failed (angry)'
       - name: When the job succeeds, notify the team :)
         if: ${{success()}}
         uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
         with:
             webhook: 'https://outlook.office.com/webhook/ee11a014-7e89-4236-b5a8-44ff49884fad@e0793d39-0939-496d-b129-198edd916feb/IncomingWebhook/f1d0852813db4607af7d932da153e39c/3aab8904-3ba2-486e-b9ee-9246128ae1c4'
-            message: 'New build deployed!'
+            message: 'New build deployed! (cool)'
       
