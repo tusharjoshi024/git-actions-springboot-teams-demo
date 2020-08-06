@@ -1,0 +1,4 @@
+rootProject.name = 'mobile-web-app'
+
+include 'java-app'
+include 'npm-app'

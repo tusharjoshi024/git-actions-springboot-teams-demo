@@ -1,0 +1,58 @@
+plugins {
+    id "com.github.node-gradle.node" version "2.2.4"
+    id "base"
+}
+
+node {
+    download = true
+
+    version = "12.18.3"
+
+    npmVersion = "6.14.7"
+
+}
+
+npm_run_build {
+    // make sure the build task is executed only when appropriate files change
+    inputs.files fileTree('public')
+    inputs.files fileTree('src')
+
+    // 'node_modules' appeared not reliable for dependency change detection (the task was rerun without changes)
+    // though 'package.json' and 'package-lock.json' should be enough anyway
+    inputs.file 'package.json'
+    inputs.file 'package-lock.json'
+
+    outputs.dir 'build'
+}
+
+// pack output of the build into JAR file
+task packageNpmApp(type: Zip) {
+    dependsOn npm_run_build
+    archiveExtension = ('jar')
+    destinationDirectory = file("${projectDir}/build_packageNpmApp")
+    from('build') {
+        // optional path under which output will be visible in Java classpath, e.g. static resources path
+        into 'static'
+    }
+}
+
+// declare a dedicated scope for publishing the packaged JAR
+configurations {
+    npmResources
+}
+
+configurations.default.extendsFrom(configurations.npmResources)
+
+// expose the artifact created by the packaging task
+artifacts {
+    npmResources(packageNpmApp.archivePath) {
+        builtBy packageNpmApp
+        type 'jar'
+    }
+}
+
+assemble.dependsOn packageNpmApp
+
+clean {
+    delete packageNpmApp.archiveFile
+}
