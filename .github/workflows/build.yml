@@ -23,16 +23,19 @@ jobs:
         with:
           name: java-app-${{ github.run_number}}
           path: java-app/build/libs/*.jar
-      - name: When the job fails, send the message on teams channel :(
+      - name: When the job fails, send the message on teams channel
         if: ${{failure()}}
-        uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
+        uses: jdcargile/ms-teams-notification@v1.2
         with:
-            webhook: 'https://outlook.office.com/webhook/ee11a014-7e89-4236-b5a8-44ff49884fad@e0793d39-0939-496d-b129-198edd916feb/IncomingWebhook/f1d0852813db4607af7d932da153e39c/3aab8904-3ba2-486e-b9ee-9246128ae1c4'
-            message: 'Build Failed (angry)'
-      - name: When the job succeeds, notify the team :)
+            github-token: ${{ github.token }}
+            ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+            notification-summary: Build was failed! &#x1F621
+            notification-color: dc3545
+      - name: When the job succeeds, notify the team
         if: ${{success()}}
-        uses: dhollerbach/github-action-send-message-to-ms-teams@1.0.10
+        uses: jdcargile/ms-teams-notification@v1.2
         with:
-            webhook: 'https://outlook.office.com/webhook/ee11a014-7e89-4236-b5a8-44ff49884fad@e0793d39-0939-496d-b129-198edd916feb/IncomingWebhook/f1d0852813db4607af7d932da153e39c/3aab8904-3ba2-486e-b9ee-9246128ae1c4'
-            message: 'New build deployed! (cool)'
-      
+            github-token: ${{ github.token }}
+            ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+            notification-summary: New build was deployed! &#x1F60E
+            notification-color: 28a745
