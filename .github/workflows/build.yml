@@ -17,7 +17,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew
         env:
-            #CI: false
+            CI: true
       - name: Archive build
         uses: actions/upload-artifact@v2
         with:
