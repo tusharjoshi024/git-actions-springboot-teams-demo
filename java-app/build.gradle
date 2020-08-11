@@ -1,20 +1,14 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.0.RELEASE")
-    }
+plugins {
+    id 'org.springframework.boot' version '2.3.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+    id "fi.evident.beanstalk" version "0.2.3"
 }
-
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.test'
 version = "${System.env.GITHUB_RUN_NUMBER ?: '0-SNAPSHOT'}" //Use GitHub Actions RUN_NUMBER if available
 
-sourceCompatibility = 1.8
+sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -30,4 +24,19 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
     runtimeOnly project(':npm-app')
+}
+
+beanstalk{
+	profile = 'my-profile' // Only required if using .aws/credentials
+	s3Endpoint = "s3-us-west-1.amazonaws.com"
+	beanstalkEndpoint = "elasticbeanstalk.us-west-1.amazonaws.com"
+	deployments{
+		staging{
+
+			file = tasks.jar
+			application = 'test-app'
+			environment = 'TestApp-env'
+		}
+	}
+
 }
